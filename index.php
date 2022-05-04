@@ -81,14 +81,14 @@ deducciones.total_deducido FROM empleados INNER JOIN devengados INNER JOIN deduc
             <select name="jornadas" id="jornadas">
                 <optgroup label="Jornadas">
                     <option value="1">Diurna</option>
-                    <option value="2">Ops</option>
                 </optgroup>
             </select>
             <br>
             <label for="">Contrato</label>
             <select name="contratos" id="contratos">
                 <optgroup label="Contratos">
-                    <option value="1">Indefindo</option> 
+                    <option value="1">Indefindo</option>
+                    <option value="2">Ops</option>
                 </optgroup>
             </select>
             <br>
