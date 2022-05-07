@@ -2,10 +2,7 @@
 // Traigo las variables del archivo conexion.php
     include('conexion.php');
     // consulta que quiero mostrar en la página
-    $mostrar = "SELECT empleados.cedula, empleados.nombre, empleados.dias_lab, devengados.sueldo, devengados.valor_horas_total,
-    devengados.auxilio_transporte, devengados.total_dev, deducciones.salud, deducciones.otras_deduc as 'Prestamos',
-deducciones.total_deducido FROM empleados INNER JOIN devengados INNER JOIN deducciones ON empleados.id = devengados.id_empleado AND empleados.id = deducciones.id_devengado;
-";
+
 ?>
 
 
@@ -19,37 +16,6 @@ deducciones.total_deducido FROM empleados INNER JOIN devengados INNER JOIN deduc
 </head>
 <body>
     <h1>Formulario para crear un empleado</h1>
-    <table border='1'>
-        <tr>
-            <th>Cedula</th>
-            <th>Nombre</th>
-            <th>Dias laborados</th>
-            <th>Sueldo</th>
-            <th>Valor horas extras</th>
-            <th>Auxilio de transporte</th>
-            <th>Total devengados</th>
-            <th>Salud</th>
-            <th>Prestamos</th>
-            <th>Total deducido</th>
-        </tr>
-        <?php
-        $tabla = mysqli_query($conexion, $mostrar);
-        while($row = mysqli_fetch_assoc($tabla)){ ?>
-        <tr>
-            <td><?php echo $row['cedula'];?></td>
-            <td><?php echo $row['nombre'];?></td>
-            <td><?php echo $row['dias_lab'];?></td>
-            <td><?php echo $row['sueldo'];?></td>
-            <td><?php echo $row['valor_horas_total'];?></td>
-            <td><?php echo $row['auxilio_transporte'];?></td>
-            <td><?php echo $row['total_dev'];?></td>
-            <td><?php echo $row['salud'];?></td>
-            <td><?php echo $row['Prestamos'];?></td>
-            <td><?php echo $row['total_deducido'];?></td>
-        </tr>
-        <?php } mysqli_free_result($tabla); ?>
-    </table>
-    <div>
         <form action="validar.php" method="POST">
             <label for="">Nombre</label>
             <input type="text" name="nombre" autocomplete="off">
@@ -73,7 +39,6 @@ deducciones.total_deducido FROM empleados INNER JOIN devengados INNER JOIN deduc
             <select name="cargos" id="cargos">
                 <optgroup label="Cargos">
                     <option value="1">Back-end</option>
-                    <option value="2">Front-end</option>
                 </optgroup>
             </select>
             <br>
@@ -98,7 +63,7 @@ deducciones.total_deducido FROM empleados INNER JOIN devengados INNER JOIN deduc
             <label for="">Dias laborados</label>
             <input type="number" name="dias_lab" min="0" max="30">
             <br>
-            <table>
+            <table id="horas_extras">
                 <tr>
                     <th>Horas Extras diurnas ordinarias</th>
                     <th>Horas Extras nocturnas ordinarias</th>
@@ -114,7 +79,37 @@ deducciones.total_deducido FROM empleados INNER JOIN devengados INNER JOIN deduc
             </table>
             <button>Enviar</button>
         </form>
-        <button>Ver empleados</button>
+        <br>
+        <br>
+        <button onclick="verEmpleados();">Ver empleados</button>
+        
     </div>
+    <script>
+        // Funcion para obtener el indice seleccionado de la etiqueta select contratos
+        function ocultarHoras(){
+            // Obteniendo la etiqueta select
+            let contratos = document.getElementById('contratos');
+            // Obteniendo los campos de horas
+            // Ya que si es contrato por ops no tiene derecho a horas extras
+            let tabla = document.getElementById('horas_extras');
+            // Obteniendo el indice seleccionado
+            let indice = contratos.options.selectedIndex;
+            // Evaluando si el indice es ops
+            if(indice == 1){
+                // si es ops no se mostrará la tabla de horas extras
+                tabla.style.display = 'none';
+            }
+            else{
+                // Si no es se mostrará
+                tabla.style.display = '';
+            }
+        }
+        // Declaracion de la función para ver la página con el listado de empleados
+        function verEmpleados(){
+            window.location = '/proyecto_nomina/empleados.php';
+        }
+
+        contratos.addEventListener('click', ocultarHoras);
+    </script>
 </body>
 </html>

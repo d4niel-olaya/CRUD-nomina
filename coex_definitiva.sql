@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-05-2022 a las 01:28:40
+-- Tiempo de generación: 04-05-2022 a las 03:07:29
 -- Versión del servidor: 10.4.22-MariaDB
 -- Versión de PHP: 8.1.1
 
@@ -30,33 +30,29 @@ SET time_zone = "+00:00";
 CREATE TABLE `aportes_pfs` (
   `id` int(11) NOT NULL,
   `id_p_seg_social` int(11) NOT NULL,
-  `caja_comp` float DEFAULT NULL,
-  `icbf` float DEFAULT NULL,
-  `sena` float DEFAULT NULL,
-  `total` float DEFAULT NULL
+  `caja_comp` decimal(16,4) DEFAULT NULL,
+  `icbf` decimal(16,4) DEFAULT NULL,
+  `sena` decimal(16,4) DEFAULT NULL,
+  `total` decimal(16,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `aportes_pfs`
---
-
-INSERT INTO `aportes_pfs` (`id`, `id_p_seg_social`, `caja_comp`, `icbf`, `sena`, `total`) VALUES
-(1, 1, 1003000, 752250, 501500, 2256750),
-(2, 2, 336333, 252250, 168167, 756750),
-(3, 3, 403000, 302250, 201500, 906750),
-(4, 4, 604375, 453281, 302188, 1359840),
-(5, 5, 604375, 453281, 302188, 1359840),
-(6, 6, 604375, 453281, 302188, 1359840),
-(7, 7, 504375, 378281, 252188, 1134840);
 
 --
 -- Disparadores `aportes_pfs`
 --
 DELIMITER $$
-CREATE TRIGGER `aportes_pfs_AI` AFTER INSERT ON `aportes_pfs` FOR EACH ROW INSERT INTO prestaciones_sociales(id_aportes, cesantias, intereses_ces, prima, vacaciones, total)
-SELECT devengados.id_empleado, devengados.total_dev * 0.833, devengados.total_dev * 0.1, devengados.total_dev * 0.833, (devengados.total_dev 
-- devengados.auxilio_transporte - devengados.valor_horas_total) * 0.417,  (devengados.total_dev * 0.833) + (devengados.total_dev * 0.1) +(devengados.total_dev * 0.833) + ((devengados.total_dev 
-- devengados.auxilio_transporte - devengados.valor_horas_total) * 0.417) FROM devengados INNER JOIN deducciones ON devengados.id_empleado = deducciones.id_devengado WHERE deducciones.id_devengado = new.id
+CREATE TRIGGER `aportes_pfs_AI` AFTER INSERT ON `aportes_pfs` FOR EACH ROW BEGIN
+	DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+    IF contrato_t = 2 THEN
+   	INSERT INTO prestaciones_sociales(id_aportes, cesantias, intereses_ces, prima, vacaciones, total)
+            VALUES(new.id, 0, 0,0,0,0);
+	ELSE 
+    INSERT INTO prestaciones_sociales(id_aportes, cesantias, intereses_ces, prima, vacaciones, total)
+    SELECT devengados.id_empleado, devengados.total_dev * 0.0833, devengados.total_dev * 0.01, devengados.total_dev * 0.0833, (devengados.total_dev 
+    - devengados.auxilio_transporte - devengados.valor_horas_total) * 0.0417,  (devengados.total_dev * 0.0833) + (devengados.total_dev * 0.01) +(devengados.total_dev * 0.0833) + ((devengados.total_dev 
+    - devengados.auxilio_transporte - devengados.valor_horas_total) * 0.0417) FROM devengados INNER JOIN deducciones ON devengados.id_empleado = deducciones.id_devengado WHERE deducciones.id_devengado = new.id;
+	END IF;
+END
 $$
 DELIMITER ;
 
@@ -71,13 +67,6 @@ CREATE TABLE `cargos` (
   `nombre` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `cargos`
---
-
-INSERT INTO `cargos` (`id`, `nombre`) VALUES
-(1, 'Back-end');
-
 -- --------------------------------------------------------
 
 --
@@ -89,13 +78,6 @@ CREATE TABLE `contratos` (
   `nombre` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `contratos`
---
-
-INSERT INTO `contratos` (`id`, `nombre`) VALUES
-(1, 'Indefinido');
-
 -- --------------------------------------------------------
 
 --
@@ -105,34 +87,33 @@ INSERT INTO `contratos` (`id`, `nombre`) VALUES
 CREATE TABLE `deducciones` (
   `id` int(11) NOT NULL,
   `id_devengado` int(11) NOT NULL,
-  `ibc` float NOT NULL,
-  `salud` float DEFAULT NULL,
-  `fsp` float DEFAULT NULL,
-  `retencion_ef` float DEFAULT NULL,
-  `otras_deduc` float DEFAULT NULL,
-  `pension` float DEFAULT NULL,
-  `total_deducido` float DEFAULT NULL
+  `ibc` decimal(16,4) NOT NULL,
+  `salud` decimal(16,4) DEFAULT NULL,
+  `fsp` decimal(16,4) DEFAULT NULL,
+  `retencion_ef` decimal(16,4) DEFAULT NULL,
+  `otras_deduc` decimal(16,4) DEFAULT NULL,
+  `pension` decimal(16,4) DEFAULT NULL,
+  `total_deducido` decimal(16,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `deducciones`
---
-
-INSERT INTO `deducciones` (`id`, `id_devengado`, `ibc`, `salud`, `fsp`, `retencion_ef`, `otras_deduc`, `pension`, `total_deducido`) VALUES
-(1, 1, 2507500, 1003000, 0, 0, 0, 1003000, 2006000),
-(2, 2, 840833, 336333, 0, 0, 0, 336333, 672667),
-(3, 3, 1007500, 403000, 0, 0, 0, 403000, 806000),
-(4, 4, 1510940, 604375, 0, 0, 0, 604375, 1208750),
-(5, 5, 1510940, 604375, 0, 0, 0, 604375, 1208750),
-(6, 6, 1510940, 604375, 0, 0, 0, 604375, 1208750),
-(7, 7, 1260940, 504375, 0, 0, 0, 504375, 1008750);
 
 --
 -- Disparadores `deducciones`
 --
 DELIMITER $$
-CREATE TRIGGER `deducciones_AI` AFTER INSERT ON `deducciones` FOR EACH ROW INSERT INTO provision_seg_social(id_deduccion,salud, pension, arl, total)
-SELECT deducciones.id_devengado, deducciones.ibc * 0.85,deducciones.ibc * 0.12,  deducciones.ibc * 0.052,(deducciones.ibc * 0.85)+(deducciones.ibc * 0.12) FROM deducciones INNER JOIN devengados ON deducciones.id_devengado = devengados.id_empleado WHERE deducciones.id_devengado = new.id
+CREATE TRIGGER `deducciones_AI` AFTER INSERT ON `deducciones` FOR EACH ROW BEGIN
+	DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+   	IF contrato_t = 2 THEN
+    INSERT INTO provision_seg_social(id_deduccion,salud, pension, arl, total)
+SELECT deducciones.id_devengado, deducciones.ibc * 0,deducciones.ibc * 0,  deducciones.ibc * 0.0052,
+deducciones.ibc * 0.0052
+FROM deducciones INNER JOIN devengados ON deducciones.id_devengado = devengados.id_empleado WHERE deducciones.id_devengado = new.id;
+ELSE 
+    INSERT INTO provision_seg_social(id_deduccion,salud, pension, arl, total)
+    SELECT deducciones.id_devengado, deducciones.ibc * 0.085,deducciones.ibc * 0.12,  deducciones.ibc * 0.0052,(deducciones.ibc * 0.085)+(deducciones.ibc * 0.12)+(deducciones.ibc * 0.0052) FROM deducciones INNER JOIN devengados ON deducciones.id_devengado = devengados.id_empleado WHERE deducciones.id_devengado = new.id;
+	END IF;
+
+END
 $$
 DELIMITER ;
 
@@ -147,13 +128,6 @@ CREATE TABLE `departamentos` (
   `nombre` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `departamentos`
---
-
-INSERT INTO `departamentos` (`id`, `nombre`) VALUES
-(1, 'Desarrollo');
-
 -- --------------------------------------------------------
 
 --
@@ -163,34 +137,31 @@ INSERT INTO `departamentos` (`id`, `nombre`) VALUES
 CREATE TABLE `devengados` (
   `id` int(11) NOT NULL,
   `id_empleado` int(11) NOT NULL,
-  `sueldo` decimal(11,2) DEFAULT 1000000.00,
+  `sueldo` decimal(16,4) DEFAULT 1000000.0000,
   `dias_lab` tinyint(3) UNSIGNED DEFAULT 30,
   `valor_horas_total` float DEFAULT NULL,
-  `auxilio_transporte` float DEFAULT NULL,
-  `comisiones` float DEFAULT NULL,
-  `total_dev` float DEFAULT NULL
+  `auxilio_transporte` decimal(16,4) DEFAULT NULL,
+  `comisiones` decimal(16,4) DEFAULT NULL,
+  `total_dev` decimal(16,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `devengados`
---
-
-INSERT INTO `devengados` (`id`, `id_empleado`, `sueldo`, `dias_lab`, `valor_horas_total`, `auxilio_transporte`, `comisiones`, `total_dev`) VALUES
-(1, 1, '2500000.00', 25, 7500, 0, 0, 2507500),
-(2, 2, '833333.33', 25, 7500, 117.172, 0, 840950),
-(3, 3, '1000000.00', 30, 7500, 117.172, 0, 1007620),
-(4, 4, '1500000.00', 30, 10938, 117.172, 0, 1511060),
-(5, 5, '1500000.00', 30, 10938, 117.172, 0, 1511060),
-(6, 6, '1500000.00', 30, 10938, 117.172, 0, 1511060),
-(7, 7, '1250000.00', 25, 10938, 117.172, 0, 1261060);
 
 --
 -- Disparadores `devengados`
 --
 DELIMITER $$
-CREATE TRIGGER `devengados_AI` AFTER INSERT ON `devengados` FOR EACH ROW INSERT INTO deducciones(id_devengado, ibc, salud,fsp,retencion_ef,otras_deduc, pension,total_deducido)
-SELECT devengados.id_empleado, devengados.total_dev - devengados.auxilio_transporte, (devengados.total_dev - devengados.auxilio_transporte) * 0.4, 0,0,0, (devengados.total_dev - devengados.auxilio_transporte) * 0.4,
-((devengados.total_dev - devengados.auxilio_transporte) * 0.4) * 2 FROM empleados INNER JOIN devengados ON empleados.id = devengados.id_empleado WHERE empleados.id = new.id
+CREATE TRIGGER `devengados_AI` AFTER INSERT ON `devengados` FOR EACH ROW BEGIN
+    DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+    IF contrato_t = 2 THEN
+    	INSERT INTO deducciones(id_devengado, ibc, salud,fsp,retencion_ef,otras_deduc, pension,total_deducido)
+SELECT devengados.id_empleado, (devengados.total_dev - devengados.auxilio_transporte), (devengados.total_dev - devengados.auxilio_transporte) * 0, 0,0,0, (devengados.total_dev - devengados.auxilio_transporte) * 0.064,
+(devengados.total_dev - devengados.auxilio_transporte) * 0.064 FROM empleados INNER JOIN devengados ON empleados.id = devengados.id_empleado WHERE empleados.id = new.id;
+    ELSE
+		INSERT INTO deducciones(id_devengado, ibc, salud,fsp,retencion_ef,otras_deduc, pension,total_deducido)
+SELECT devengados.id_empleado, devengados.total_dev - devengados.auxilio_transporte, (devengados.total_dev - devengados.auxilio_transporte) * 0.04, 0,0,0, (devengados.total_dev - devengados.auxilio_transporte) * 0.04,
+((devengados.total_dev - devengados.auxilio_transporte) * 0.04) * 2 FROM empleados INNER JOIN devengados ON empleados.id = devengados.id_empleado WHERE empleados.id = new.id;
+    END IF;
+END
 $$
 DELIMITER ;
 
@@ -210,36 +181,25 @@ CREATE TABLE `empleados` (
   `id_departamento` int(11) NOT NULL,
   `id_jornada` int(11) NOT NULL,
   `id_contrato` int(11) NOT NULL,
-  `salario_basico` decimal(11,2) DEFAULT NULL,
+  `salario_basico` decimal(16,2) DEFAULT NULL,
   `dias_lab` tinyint(3) UNSIGNED DEFAULT NULL,
   `num_horas` tinyint(3) UNSIGNED DEFAULT NULL,
   `valor_horas_total` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `empleados`
---
-
-INSERT INTO `empleados` (`id`, `cedula`, `id_nomina`, `nombre`, `apellido`, `id_cargo`, `id_departamento`, `id_jornada`, `id_contrato`, `salario_basico`, `dias_lab`, `num_horas`, `valor_horas_total`) VALUES
-(1, '1095298369', 1, 'David', 'Olaya', 1, 1, 1, 1, '3000000.00', 25, 2, 7500),
-(2, '1095298370', 1, 'Daniel', 'Olaya', 1, 1, 1, 1, '1000000.00', 25, 2, 7500),
-(3, '1095298371', 1, 'Daniel', 'Perez', 1, 1, 1, 1, '1000000.00', 30, 2, 7500),
-(4, '1095298379', 1, 'Juan', 'Olaya', 1, 1, 1, 1, '1500000.00', 30, 2, 10938),
-(5, '1095298382', 1, 'Marcos', 'Olaya', 1, 1, 1, 1, '1500000.00', 30, 2, 10938),
-(6, '1023431213', 1, 'Nicolas', 'Camargo', 1, 1, 1, 1, '1500000.00', 30, 2, 10938),
-(7, '1232431043', 1, 'Sergio', 'Leon', 1, 1, 1, 1, '1500000.00', 25, 3, 10938);
-
---
 -- Disparadores `empleados`
 --
 DELIMITER $$
 CREATE TRIGGER `empleados_dev` AFTER INSERT ON `empleados` FOR EACH ROW BEGIN
-	DECLARE auxilio float;
-	IF(new.salario_basico > 2000000) THEN
-		SET auxilio = 0;
+	DECLARE auxilio int;
+    DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+	IF contrato_t = 2 OR new.salario_basico > 2000000 THEN
+    	SET auxilio = 0;
 	ELSE
-		SET auxilio = 117.172;
-	END IF;
+    	SET auxilio = 117172;
+    END IF;	
 	INSERT INTO devengados(id_empleado, sueldo, dias_lab, valor_horas_total,auxilio_transporte,comisiones, total_dev)
 		VALUES(new.id, (new.salario_basico/30)*new.dias_lab, new.dias_lab, new.valor_horas_total, auxilio, 0, ((new.salario_basico/30)*new.dias_lab) + new.valor_horas_total+ auxilio);
 END
@@ -264,19 +224,6 @@ CREATE TABLE `horas` (
   `valor_horas_total` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `horas`
---
-
-INSERT INTO `horas` (`id`, `id_empleado`, `num_horas`, `valor_horas_total`) VALUES
-(1, 1, 2, 7500),
-(2, 2, 2, 7500),
-(3, 3, 2, 7500),
-(4, 4, 2, 10938),
-(5, 5, 2, 10938),
-(6, 6, 2, 10938),
-(7, 7, 3, 10938);
-
 -- --------------------------------------------------------
 
 --
@@ -287,13 +234,6 @@ CREATE TABLE `jornadas` (
   `id` int(11) NOT NULL,
   `nombre` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `jornadas`
---
-
-INSERT INTO `jornadas` (`id`, `nombre`) VALUES
-(1, 'Diurna');
 
 -- --------------------------------------------------------
 
@@ -306,13 +246,6 @@ CREATE TABLE `nominas` (
   `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `nominas`
---
-
-INSERT INTO `nominas` (`id`, `fecha`) VALUES
-(1, '2022-02-24');
-
 -- --------------------------------------------------------
 
 --
@@ -322,25 +255,12 @@ INSERT INTO `nominas` (`id`, `fecha`) VALUES
 CREATE TABLE `prestaciones_sociales` (
   `id` int(11) NOT NULL,
   `id_aportes` int(11) NOT NULL,
-  `cesantias` float DEFAULT NULL,
-  `intereses_ces` float DEFAULT NULL,
-  `prima` float DEFAULT NULL,
-  `vacaciones` float DEFAULT NULL,
-  `total` float DEFAULT NULL
+  `cesantias` decimal(16,4) DEFAULT NULL,
+  `intereses_ces` decimal(16,4) DEFAULT NULL,
+  `prima` decimal(16,4) DEFAULT NULL,
+  `vacaciones` decimal(16,4) DEFAULT NULL,
+  `total` decimal(16,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `prestaciones_sociales`
---
-
-INSERT INTO `prestaciones_sociales` (`id`, `id_aportes`, `cesantias`, `intereses_ces`, `prima`, `vacaciones`, `total`) VALUES
-(1, 1, 2088750, 250750, 2088750, 1042500, 5470740),
-(2, 2, 700512, 84095, 700512, 347500, 1832620),
-(3, 3, 839345, 100762, 839345, 417000, 2196450),
-(4, 4, 1258710, 151106, 1258710, 625500, 3294020),
-(5, 5, 1258710, 151106, 1258710, 625500, 3294020),
-(6, 6, 1258710, 151106, 1258710, 625500, 3294020),
-(7, 7, 1050460, 126106, 1050460, 521250, 2748270);
 
 -- --------------------------------------------------------
 
@@ -351,33 +271,32 @@ INSERT INTO `prestaciones_sociales` (`id`, `id_aportes`, `cesantias`, `intereses
 CREATE TABLE `provision_seg_social` (
   `id` int(11) NOT NULL,
   `id_deduccion` int(11) NOT NULL,
-  `salud` float DEFAULT NULL,
-  `pension` float DEFAULT NULL,
-  `arl` float DEFAULT NULL,
-  `total` float DEFAULT NULL
+  `salud` decimal(16,4) DEFAULT NULL,
+  `pension` decimal(16,4) DEFAULT NULL,
+  `arl` decimal(16,4) DEFAULT NULL,
+  `total` decimal(16,4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `provision_seg_social`
---
-
-INSERT INTO `provision_seg_social` (`id`, `id_deduccion`, `salud`, `pension`, `arl`, `total`) VALUES
-(1, 1, 2131380, 300900, 130390, 2432280),
-(2, 2, 714708, 100900, 43723.3, 815608),
-(3, 3, 856375, 120900, 52390, 977275),
-(4, 4, 1284300, 181313, 78568.8, 1465610),
-(5, 5, 1284300, 181313, 78568.8, 1465610),
-(6, 6, 1284300, 181313, 78568.8, 1465610),
-(7, 7, 1071800, 151313, 65568.8, 1223110);
 
 --
 -- Disparadores `provision_seg_social`
 --
 DELIMITER $$
-CREATE TRIGGER `provision_seg_social_AI` AFTER INSERT ON `provision_seg_social` FOR EACH ROW INSERT INTO aportes_pfs(id_p_seg_social, caja_comp, icbf, sena, total)
-SELECT deducciones.id_devengado, deducciones.ibc * 0.4, deducciones.ibc *0.3, deducciones.ibc * 0.2,
-(deducciones.ibc * 0.4)+(deducciones.ibc *0.3) +(deducciones.ibc * 0.2) FROM deducciones INNER JOIN provision_seg_social ON
-deducciones.id_devengado = provision_seg_social.id_deduccion WHERE provision_seg_social.id_deduccion = new.id
+CREATE TRIGGER `provision_seg_social_AI` AFTER INSERT ON `provision_seg_social` FOR EACH ROW BEGIN
+	DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+    IF contrato_t = 2 THEN
+    	INSERT INTO aportes_pfs(id_p_seg_social, caja_comp, icbf, sena, total)
+SELECT deducciones.id_devengado, deducciones.ibc *0, deducciones.ibc *0, deducciones.ibc * 0,
+deducciones.ibc * 0 FROM deducciones INNER JOIN provision_seg_social ON
+deducciones.id_devengado = provision_seg_social.id_deduccion WHERE provision_seg_social.id_deduccion = new.id;
+ELSE 
+    INSERT INTO aportes_pfs(id_p_seg_social, caja_comp, icbf, sena, total)
+    SELECT deducciones.id_devengado, deducciones.ibc * 0.04, deducciones.ibc *0.03, deducciones.ibc * 0.02,
+    (deducciones.ibc * 0.04)+(deducciones.ibc *0.03) +(deducciones.ibc * 0.02) FROM deducciones INNER JOIN provision_seg_social ON
+    deducciones.id_devengado = provision_seg_social.id_deduccion WHERE provision_seg_social.id_deduccion = new.id;
+    END IF;
+
+END
 $$
 DELIMITER ;
 
@@ -482,73 +401,73 @@ ALTER TABLE `provision_seg_social`
 -- AUTO_INCREMENT de la tabla `aportes_pfs`
 --
 ALTER TABLE `aportes_pfs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cargos`
 --
 ALTER TABLE `cargos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `deducciones`
 --
 ALTER TABLE `deducciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `departamentos`
 --
 ALTER TABLE `departamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `devengados`
 --
 ALTER TABLE `devengados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `horas`
 --
 ALTER TABLE `horas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `jornadas`
 --
 ALTER TABLE `jornadas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `nominas`
 --
 ALTER TABLE `nominas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `prestaciones_sociales`
 --
 ALTER TABLE `prestaciones_sociales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `provision_seg_social`
 --
 ALTER TABLE `provision_seg_social`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
