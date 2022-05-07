@@ -40,6 +40,7 @@ CREATE TABLE `aportes_pfs` (
 -- Disparadores `aportes_pfs`
 --
 DELIMITER $$
+<<<<<<< HEAD
 CREATE TRIGGER `aportes_pfs_AI` AFTER INSERT ON `aportes_pfs` FOR EACH ROW BEGIN
 	DECLARE contrato_t int;
     SET contrato_t = tipo_contrato(new.id);
@@ -52,6 +53,20 @@ CREATE TRIGGER `aportes_pfs_AI` AFTER INSERT ON `aportes_pfs` FOR EACH ROW BEGIN
     - devengados.auxilio_transporte - devengados.valor_horas_total) * 0.0417,  (devengados.total_dev * 0.0833) + (devengados.total_dev * 0.01) +(devengados.total_dev * 0.0833) + ((devengados.total_dev 
     - devengados.auxilio_transporte - devengados.valor_horas_total) * 0.0417) FROM devengados INNER JOIN deducciones ON devengados.id_empleado = deducciones.id_devengado WHERE deducciones.id_devengado = new.id;
 	END IF;
+=======
+CREATE TRIGGER `aportes_pfs_AI` AFTER INSERT ON `aportes_pfs` FOR EACH ROW BEGIN
+	DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+    IF contrato_t = 2 THEN
+   	INSERT INTO prestaciones_sociales(id_aportes, cesantias, intereses_ces, prima, vacaciones, total)
+            VALUES(new.id, 0, 0,0,0,0);
+	ELSE 
+    INSERT INTO prestaciones_sociales(id_aportes, cesantias, intereses_ces, prima, vacaciones, total)
+    SELECT devengados.id_empleado, devengados.total_dev * 0.0833, devengados.total_dev * 0.01, devengados.total_dev * 0.0833, (devengados.total_dev 
+    - devengados.auxilio_transporte - devengados.valor_horas_total) * 0.0417,  (devengados.total_dev * 0.0833) + (devengados.total_dev * 0.01) +(devengados.total_dev * 0.0833) + ((devengados.total_dev 
+    - devengados.auxilio_transporte - devengados.valor_horas_total) * 0.0417) FROM devengados INNER JOIN deducciones ON devengados.id_empleado = deducciones.id_devengado WHERE deducciones.id_devengado = new.id;
+	END IF;
+>>>>>>> 3a3eaae0e45f2a7217bd374f29298209efd77147
 END
 $$
 DELIMITER ;
@@ -100,6 +115,7 @@ CREATE TABLE `deducciones` (
 -- Disparadores `deducciones`
 --
 DELIMITER $$
+<<<<<<< HEAD
 CREATE TRIGGER `deducciones_AI` AFTER INSERT ON `deducciones` FOR EACH ROW BEGIN
 	DECLARE contrato_t int;
     SET contrato_t = tipo_contrato(new.id);
@@ -113,6 +129,21 @@ ELSE
     SELECT deducciones.id_devengado, deducciones.ibc * 0.085,deducciones.ibc * 0.12,  deducciones.ibc * 0.0052,(deducciones.ibc * 0.085)+(deducciones.ibc * 0.12)+(deducciones.ibc * 0.0052) FROM deducciones INNER JOIN devengados ON deducciones.id_devengado = devengados.id_empleado WHERE deducciones.id_devengado = new.id;
 	END IF;
 
+=======
+CREATE TRIGGER `deducciones_AI` AFTER INSERT ON `deducciones` FOR EACH ROW BEGIN
+	DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+   	IF contrato_t = 2 THEN
+    INSERT INTO provision_seg_social(id_deduccion,salud, pension, arl, total)
+SELECT deducciones.id_devengado, deducciones.ibc * 0,deducciones.ibc * 0,  deducciones.ibc * 0.0052,
+deducciones.ibc * 0.0052
+FROM deducciones INNER JOIN devengados ON deducciones.id_devengado = devengados.id_empleado WHERE deducciones.id_devengado = new.id;
+ELSE 
+    INSERT INTO provision_seg_social(id_deduccion,salud, pension, arl, total)
+    SELECT deducciones.id_devengado, deducciones.ibc * 0.085,deducciones.ibc * 0.12,  deducciones.ibc * 0.0052,(deducciones.ibc * 0.085)+(deducciones.ibc * 0.12)+(deducciones.ibc * 0.0052) FROM deducciones INNER JOIN devengados ON deducciones.id_devengado = devengados.id_empleado WHERE deducciones.id_devengado = new.id;
+	END IF;
+
+>>>>>>> 3a3eaae0e45f2a7217bd374f29298209efd77147
 END
 $$
 DELIMITER ;
@@ -149,6 +180,7 @@ CREATE TABLE `devengados` (
 -- Disparadores `devengados`
 --
 DELIMITER $$
+<<<<<<< HEAD
 CREATE TRIGGER `devengados_AI` AFTER INSERT ON `devengados` FOR EACH ROW BEGIN
     DECLARE contrato_t int;
     SET contrato_t = tipo_contrato(new.id);
@@ -161,6 +193,20 @@ SELECT devengados.id_empleado, (devengados.total_dev - devengados.auxilio_transp
 SELECT devengados.id_empleado, devengados.total_dev - devengados.auxilio_transporte, (devengados.total_dev - devengados.auxilio_transporte) * 0.04, 0,0,0, (devengados.total_dev - devengados.auxilio_transporte) * 0.04,
 ((devengados.total_dev - devengados.auxilio_transporte) * 0.04) * 2 FROM empleados INNER JOIN devengados ON empleados.id = devengados.id_empleado WHERE empleados.id = new.id;
     END IF;
+=======
+CREATE TRIGGER `devengados_AI` AFTER INSERT ON `devengados` FOR EACH ROW BEGIN
+    DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+    IF contrato_t = 2 THEN
+    	INSERT INTO deducciones(id_devengado, ibc, salud,fsp,retencion_ef,otras_deduc, pension,total_deducido)
+SELECT devengados.id_empleado, (devengados.total_dev - devengados.auxilio_transporte), (devengados.total_dev - devengados.auxilio_transporte) * 0, 0,0,0, (devengados.total_dev - devengados.auxilio_transporte) * 0.064,
+(devengados.total_dev - devengados.auxilio_transporte) * 0.064 FROM empleados INNER JOIN devengados ON empleados.id = devengados.id_empleado WHERE empleados.id = new.id;
+    ELSE
+		INSERT INTO deducciones(id_devengado, ibc, salud,fsp,retencion_ef,otras_deduc, pension,total_deducido)
+SELECT devengados.id_empleado, devengados.total_dev - devengados.auxilio_transporte, (devengados.total_dev - devengados.auxilio_transporte) * 0.04, 0,0,0, (devengados.total_dev - devengados.auxilio_transporte) * 0.04,
+((devengados.total_dev - devengados.auxilio_transporte) * 0.04) * 2 FROM empleados INNER JOIN devengados ON empleados.id = devengados.id_empleado WHERE empleados.id = new.id;
+    END IF;
+>>>>>>> 3a3eaae0e45f2a7217bd374f29298209efd77147
 END
 $$
 DELIMITER ;
@@ -191,6 +237,7 @@ CREATE TABLE `empleados` (
 -- Disparadores `empleados`
 --
 DELIMITER $$
+<<<<<<< HEAD
 CREATE TRIGGER `empleados_dev` AFTER INSERT ON `empleados` FOR EACH ROW BEGIN
 	DECLARE auxilio int;
     DECLARE contrato_t int;
@@ -202,6 +249,19 @@ CREATE TRIGGER `empleados_dev` AFTER INSERT ON `empleados` FOR EACH ROW BEGIN
     END IF;	
 	INSERT INTO devengados(id_empleado, sueldo, dias_lab, valor_horas_total,auxilio_transporte,comisiones, total_dev)
 		VALUES(new.id, (new.salario_basico/30)*new.dias_lab, new.dias_lab, new.valor_horas_total, auxilio, 0, ((new.salario_basico/30)*new.dias_lab) + new.valor_horas_total+ auxilio);
+=======
+CREATE TRIGGER `empleados_dev` AFTER INSERT ON `empleados` FOR EACH ROW BEGIN
+	DECLARE auxilio int;
+    DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+	IF contrato_t = 2 OR new.salario_basico > 2000000 THEN
+    	SET auxilio = 0;
+	ELSE
+    	SET auxilio = 117172;
+    END IF;	
+	INSERT INTO devengados(id_empleado, sueldo, dias_lab, valor_horas_total,auxilio_transporte,comisiones, total_dev)
+		VALUES(new.id, (new.salario_basico/30)*new.dias_lab, new.dias_lab, new.valor_horas_total, auxilio, 0, ((new.salario_basico/30)*new.dias_lab) + new.valor_horas_total+ auxilio);
+>>>>>>> 3a3eaae0e45f2a7217bd374f29298209efd77147
 END
 $$
 DELIMITER ;
@@ -281,6 +341,7 @@ CREATE TABLE `provision_seg_social` (
 -- Disparadores `provision_seg_social`
 --
 DELIMITER $$
+<<<<<<< HEAD
 CREATE TRIGGER `provision_seg_social_AI` AFTER INSERT ON `provision_seg_social` FOR EACH ROW BEGIN
 	DECLARE contrato_t int;
     SET contrato_t = tipo_contrato(new.id);
@@ -296,6 +357,23 @@ ELSE
     deducciones.id_devengado = provision_seg_social.id_deduccion WHERE provision_seg_social.id_deduccion = new.id;
     END IF;
 
+=======
+CREATE TRIGGER `provision_seg_social_AI` AFTER INSERT ON `provision_seg_social` FOR EACH ROW BEGIN
+	DECLARE contrato_t int;
+    SET contrato_t = tipo_contrato(new.id);
+    IF contrato_t = 2 THEN
+    	INSERT INTO aportes_pfs(id_p_seg_social, caja_comp, icbf, sena, total)
+SELECT deducciones.id_devengado, deducciones.ibc *0, deducciones.ibc *0, deducciones.ibc * 0,
+deducciones.ibc * 0 FROM deducciones INNER JOIN provision_seg_social ON
+deducciones.id_devengado = provision_seg_social.id_deduccion WHERE provision_seg_social.id_deduccion = new.id;
+ELSE 
+    INSERT INTO aportes_pfs(id_p_seg_social, caja_comp, icbf, sena, total)
+    SELECT deducciones.id_devengado, deducciones.ibc * 0.04, deducciones.ibc *0.03, deducciones.ibc * 0.02,
+    (deducciones.ibc * 0.04)+(deducciones.ibc *0.03) +(deducciones.ibc * 0.02) FROM deducciones INNER JOIN provision_seg_social ON
+    deducciones.id_devengado = provision_seg_social.id_deduccion WHERE provision_seg_social.id_deduccion = new.id;
+    END IF;
+
+>>>>>>> 3a3eaae0e45f2a7217bd374f29298209efd77147
 END
 $$
 DELIMITER ;
