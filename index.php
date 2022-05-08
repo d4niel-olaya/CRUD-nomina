@@ -39,6 +39,7 @@
             <select name="cargos" id="cargos">
                 <optgroup label="Cargos">
                     <option value="1">Back-end</option>
+                    <option value="2">Front-end</option>
                 </optgroup>
             </select>
             <br>
@@ -58,10 +59,10 @@
             </select>
             <br>
             <label for="">Salario básico</label>
-            <input type="text" name="salario_basic" min="100000">
+            <input type="text" name="salario_basic" min="100000" required>
             <br>
             <label for="">Dias laborados</label>
-            <input type="number" name="dias_lab" min="0" max="30">
+            <input type="number" name="dias_lab" min="0" max="30" required>
             <br>
             <table id="horas_extras">
                 <tr>

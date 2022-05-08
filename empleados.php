@@ -4,8 +4,8 @@
     include('conexion.php');
     // consulta que quiero mostrar en la página
     $mostrar = "SELECT empleados.cedula, empleados.nombre, empleados.apellido, departamentos.nombre as 'Departamento',
-     cargos.nombre as 'Cargo' FROM empleados INNER JOIN departamentos INNER JOIN cargos ON empleados.id_departamento = departamentos.id AND empleados.id_cargo = cargos.id;
-";
+     cargos.nombre as 'Cargo' FROM empleados INNER JOIN departamentos INNER JOIN cargos ON empleados.id_departamento = departamentos.id AND empleados.id_cargo = cargos.id
+    ORDER BY empleados.cedula;";  
 
 ?>
 
@@ -25,24 +25,47 @@
             <label for="busquedaEmp">Buscar empleado por la cedula</label>
             <input type="search" id="busquedaEmp" name="buscarEmp">
             <button>Buscar</button>
+            <select name="cargos" id="Cargos">
+                <optgroup label="Cargos">
+                    <option value="Back-end">Back-end</option>
+                    <option value="Front-end">Front-end</option>
+                </optgroup>
+            </select>
+            <select name="departamentos" id="departamentos">
+                <optgroup label="Departamentos">
+                    <option value="Desarrollo">Desarrollo</option>
+                </optgroup>
+            </select>
         </form>
-        <select name="opciones" id="opciones">
-            <optgroup label="Fitros">
-                
-                <option value="cargo">Cargo</option>
-                <option value="departamentos">Departamentos</option>
-            </optgroup>
-        </select>
         <?php
+        // Verificando la variable de busqueda existe
             if(isset($_GET['busqueda'])){
+                // guardando el estado de la busqueda
                 $estado_cedula = $_GET['busqueda'];
+                // Si la cedula se encuentra
                 if($estado_cedula == 'encontrada'){
+                    // Se guarda la cedula
                     $cedula = $_GET['cedula'];
+                    // Se le avisa al usuario que se encontró
                     echo '<h2>Cedula encontrada</h2>';
-                    $mostrar = $mostrar = "SELECT empleados.cedula, empleados.nombre, empleados.apellido, departamentos.nombre as 'Departamento',
+                    // Se modifica la consulta general
+                    $mostrar =  "SELECT empleados.cedula, empleados.nombre, empleados.apellido, departamentos.nombre as 'Departamento',
                     cargos.nombre as 'Cargo' FROM empleados INNER JOIN departamentos INNER JOIN cargos ON empleados.id_departamento = departamentos.id AND empleados.id_cargo = cargos.id
                     WHERE cedula = '$cedula';";
+                    
                 }
+                // Si la cedula está vacia y  si se seleccioná algún filtro
+                else if(empty($_GET['cedula']) && !empty($_GET['cargo']) && !empty($_GET['dep'])){
+                    // Se guarda el cargo
+                    $cargo = $_GET['cargo'];
+                    // Se guarda el departamento
+                    $dep = $_GET['dep'];
+                    // Se incorpora el cargo y el departamento en la consulta
+                    $mostrar = "SELECT empleados.cedula, empleados.nombre, empleados.apellido, departamentos.nombre as 'Departamento',
+                        cargos.nombre as 'Cargo' FROM empleados INNER JOIN departamentos INNER JOIN cargos ON empleados.id_departamento = departamentos.id AND empleados.id_cargo = cargos.id
+                    WHERE cargos.nombre = '$cargo' AND departamentos.nombre = '$dep' ORDER BY cargos.nombre and departamentos.nombre;";  
+                }
+                
                 else{
                     echo '<h2>Cedula no encontrada</h2>';
                 }
@@ -72,6 +95,13 @@
         </tr>
         <?php } mysqli_free_result($tabla); ?>
     </table>
+    <button onclick="volver()">Volver al inicio</button>
+    <script>
+        function volver(){
+            // Función para volver al index.php
+            window.location = '/proyecto_nomina';
+        }
+    </script>
     <div>
 </body>
 
