@@ -27,6 +27,7 @@
             <button>Buscar</button>
             <select name="cargos" id="Cargos">
                 <optgroup label="Cargos">
+                    <option value=""></option>
                     <option value="Back-end">Back-end</option>
                     <option value="Front-end">Front-end</option>
                 </optgroup>
@@ -65,6 +66,17 @@
                         cargos.nombre as 'Cargo' FROM empleados INNER JOIN departamentos INNER JOIN cargos ON empleados.id_departamento = departamentos.id AND empleados.id_cargo = cargos.id
                     WHERE cargos.nombre = '$cargo' AND departamentos.nombre = '$dep' ORDER BY cargos.nombre and departamentos.nombre;";  
                 }
+                else if(empty($_GET['cedula']) && empty($_GET['cargo'])){
+                    // Se guarda el cargo
+                    $cargo = $_GET['cargo'];
+                    // Se guarda el departamento
+                    $dep = $_GET['dep'];
+                    // Se modifica la consulta
+                    $mostrar = "SELECT empleados.cedula, empleados.nombre, empleados.apellido, departamentos.nombre as 'Departamento',
+                        cargos.nombre as 'Cargo' FROM empleados INNER JOIN departamentos INNER JOIN cargos ON empleados.id_departamento = departamentos.id AND empleados.id_cargo = cargos.id
+                    WHERE departamentos.nombre = '$dep' ORDER BY departamentos.nombre;";  
+
+                }   
                 
                 else{
                     echo '<h2>Cedula no encontrada</h2>';
