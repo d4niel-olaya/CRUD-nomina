@@ -84,35 +84,64 @@
             }
         ?>
     </div>
-    <br>   
-    <table border='1' id="empleados">
-        <tr>
-            <th>Cedula</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Departamento</th>
-            <th>Cargo</th>
-            
-        </tr>
-        <?php
-        $tabla = mysqli_query($conexion, $mostrar);
-        while($row = mysqli_fetch_assoc($tabla)){ ?>
-        <tr>
-            <td><?php echo $row['cedula'];?></td>
-            <td><?php echo $row['nombre'];?></td>
-            <td><?php echo $row['apellido'];?></td>
-            <td><?php echo $row['Departamento'];?></td>
-            <td><?php echo $row['Cargo'];?></td>
-           
-        </tr>
-        <?php } mysqli_free_result($tabla); ?>
-    </table>
+    <br>
+    <form action="nomina_calculada.php" id="calcularNomina" method ="POST">
+        <table border='1' id="empleados">
+            <tr>
+                <th></th>
+                <th>Cedula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Departamento</th>
+                <th>Cargo</th>
+                
+            </tr>
+            <?php
+            $tabla = mysqli_query($conexion, $mostrar);
+            while($row = mysqli_fetch_assoc($tabla)){ ?>
+            <tr>
+                <!--<td><input type="checkbox" name="seleccionados[]"></td>--> 
+                <?php echo '<td> <input type="checkbox"  name="seleccionados['.$row['cedula'].']"></td>' ?>
+                <td><?php echo $row['cedula'];?></td>
+                <td><?php echo $row['nombre'];?></td>
+                <td><?php echo $row['apellido'];?></td>
+                <td><?php echo $row['Departamento'];?></td>
+                <td><?php echo $row['Cargo'];?></td>
+            </tr>
+            <?php } mysqli_free_result($tabla); ?>
+        </table>
+        <button>Calcular nomina</button>
+    </form>  
+
+    <br>
     <button onclick="volver()">Volver al inicio</button>
     <script>
         function volver(){
             // Función para volver al index.php
             window.location = '/proyecto_nomina';
         }
+        // Sacando valores de el checklist
+        // 
+        /*
+            document.forms['calcularNomina'].elements['seleccionados[]'][0]
+
+        */
+       /*
+       function sacarSeleccionados(){
+            let seleccion = document.getElementsByName('seleccionados[]');
+            var checkeados = [];
+            seleccion[0].checked = true;
+            for(let indice = 0; indice < seleccion.length; indice++){
+                if(seleccion[indice].checked){
+                    checkados.push(indice);
+                }
+            }
+            
+       }
+       */
+       
+       //let seleccion = document.getElementsByName('seleccionados[]');
+        
     </script>
     <div>
 </body>
