@@ -17,6 +17,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de empleados</title>
+    <style>
+        table,th,td{
+            border:1px solid black;
+        }
+    </style>
 </head>
 <body>
 <h1>Listado de empleados</h1>
@@ -83,10 +88,23 @@
                 }
             }
         ?>
+        <?php
+            if(isset($_GET['seleccion'])){
+                
+                $indicativo = $_GET['seleccion'];
+                $total_acumulado = $_GET['total'];
+                if($indicativo == 'vacio'){
+                    echo "<h3>Debes seleccionar un empleado</h3>";
+                }
+                else{
+                    echo "<h3>Total devengado calculado = ".$total_acumulado."</h3>";
+                }
+            }
+        ?>
     </div>
     <br>
     <form action="nomina_calculada.php" id="calcularNomina" method ="POST">
-        <table border='1' id="empleados">
+        <table id="empleados">
             <tr>
                 <th></th>
                 <th>Cedula</th>
@@ -120,28 +138,6 @@
             // Función para volver al index.php
             window.location = '/proyecto_nomina';
         }
-        // Sacando valores de el checklist
-        // 
-        /*
-            document.forms['calcularNomina'].elements['seleccionados[]'][0]
-
-        */
-       /*
-       function sacarSeleccionados(){
-            let seleccion = document.getElementsByName('seleccionados[]');
-            var checkeados = [];
-            seleccion[0].checked = true;
-            for(let indice = 0; indice < seleccion.length; indice++){
-                if(seleccion[indice].checked){
-                    checkados.push(indice);
-                }
-            }
-            
-       }
-       */
-       
-       //let seleccion = document.getElementsByName('seleccionados[]');
-        
     </script>
     <div>
 </body>

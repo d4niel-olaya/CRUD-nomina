@@ -17,14 +17,14 @@
 <body>
     <h1>Formulario para crear un empleado</h1>
         <form action="validar.php" method="POST">
+            <label for="">Cedula</label>
+            <input type="text" name="cedula" autocomplete="off" maxlength="10">
+            <br>
             <label for="">Nombre</label>
             <input type="text" name="nombre" autocomplete="off">
             <br>
             <label for="">Apellido</label>
             <input type="text" name="apellido" autocomplete="off">
-            <br>
-            <label for="">Cedula</label>
-            <input type="text" name="cedula" autocomplete="off" maxlength="10">
             <br>
             <label for="">Departamentos</label>
             <select name="departamentos" id="departamentos">
