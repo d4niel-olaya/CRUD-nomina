@@ -39,6 +39,12 @@
                 <br>
                 <label for="">Telefono fijo</label>
                 <input type="text">
+                <br>
+                <label for="">Dirrecion</label>
+                <input type="text">
+                <br>
+                <label for="">Eps</label>
+                <input type="text">
             </div>
             <label for="">Departamentos</label>
             <select name="departamentos" id="departamentos">

@@ -25,7 +25,7 @@ body{
     margin-top: 10px;
 }
 hr{
-    border: 1px solid rgb(166, 163, 163);
+    border: 1px solid rgb(206, 199, 199);
     width: 500px;
     margin:0 auto;
     margin-bottom: 10px;
@@ -37,7 +37,7 @@ form{
 .part_1{
     display: flex;
     flex-wrap: wrap;
-    border: 1px solid rgb(147, 22, 22);
+    border: 1px solid black;
     width: 75%;
 }
 
