@@ -1,0 +1,27 @@
+*{
+    margin:0px;
+    padding: 0px;
+    border: none;
+    list-style: none;
+    text-decoration: none;
+    outline: none;
+}
+
+input{
+    border: 1px solid black;
+    background-color: #EBEBEB;
+    border-radius: 5px;
+    padding: 3px;
+}
+select{
+    border:1px solid black;
+}
+body{
+    font-family: sans-serif;
+}
+
+h4{
+    color:red;
+}
+
+
