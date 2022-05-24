@@ -20,15 +20,26 @@
     <h4>Datos personales y contrato</h4>
         <form action="validar.php" method="POST">
             <h4 class="sub-form">Datos personales del empleado</h4>
-            <label for="">Cedula</label>
-            <input type="text" name="cedula" autocomplete="off" maxlength="10">
-            <br>
-            <label for="">Nombre</label>
-            <input type="text" name="nombre" autocomplete="off">
-            <br>
-            <label for="">Apellido</label>
-            <input type="text" name="apellido" autocomplete="off">
-            <br>
+            <hr>
+            <div class="part_1">
+                <label for="">Cedula</label>
+                <input type="text" name="cedula" autocomplete="off" maxlength="10">
+                <br>
+                <label for="">Nombre</label>
+                <input type="text" name="nombre" autocomplete="off">
+                <br>
+                <label for="">Apellido</label>
+                <input type="text" name="apellido" autocomplete="off">
+                <br>
+                <label for="">Genero</label>
+                <input type="text">
+                <br>
+                <label for="">Celular</label>
+                <input type="text">
+                <br>
+                <label for="">Telefono fijo</label>
+                <input type="text">
+            </div>
             <label for="">Departamentos</label>
             <select name="departamentos" id="departamentos">
                 <optgroup label="Departamentos">

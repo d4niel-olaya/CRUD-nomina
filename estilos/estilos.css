@@ -19,9 +19,30 @@ select{
 body{
     font-family: sans-serif;
 }
+.sub-form{
+    color:#404040;
+    text-align: center;
+    margin-top: 10px;
+}
+hr{
+    border: 1px solid rgb(166, 163, 163);
+    width: 500px;
+    margin:0 auto;
+    margin-bottom: 10px;
+}
+form{
+    border:1px solid black;
+}
 
-h4{
-    color:red;
+.part_1{
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid rgb(147, 22, 22);
+    width: 75%;
+}
+
+.part_1 label, input{
+    margin-top: 10px;
 }
 
 
