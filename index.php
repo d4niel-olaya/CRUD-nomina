@@ -22,87 +22,126 @@
             <h4 class="sub-form">Datos personales del empleado</h4>
             <hr>
             <div class="part_1">
-                <label for="">Cedula</label>
-                <input type="text" name="cedula" autocomplete="off" maxlength="10">
-                <br>
-                <label for="">Nombre</label>
-                <input type="text" name="nombre" autocomplete="off">
-                <br>
-                <label for="">Apellido</label>
-                <input type="text" name="apellido" autocomplete="off">
-                <br>
-                <label for="">Genero</label>
-                <input type="text">
-                <br>
-                <label for="">Celular</label>
-                <input type="text">
-                <br>
-                <label for="">Telefono fijo</label>
-                <input type="text">
-                <br>
-                <label for="">Dirrecion</label>
-                <input type="text">
-                <br>
-                <label for="">Eps</label>
-                <input type="text">
+                <div>
+                    <label for="">Cedula</label>
+                    <br>
+                    <input type="text" name="cedula" autocomplete="off" maxlength="10">
+                </div>
+                <div>
+                    <label for="">Nombre</label>
+                    <br>
+                    <input type="text" name="nombre" autocomplete="off">
+                </div>
+                <div>
+                    <label for="">Apellido</label>
+                    <br>
+                    <input type="text" name="apellido" autocomplete="off">
+                </div>
+                <div>
+                    <label for="">Genero</label>
+                    <br>
+                    <input type="text">
+                </div>
+                <div>
+                    <label for="">Celular</label>
+                    <br>
+                    <input type="text">
+                </div>
+                <div>
+                    <label for="">Telefono fijo</label>
+                    <br>
+                    <input type="text">
+                </div>
+                <div>
+                    <label for="">Dirrecion</label>
+                    <br>
+                    <input type="text">
+                </div>
+                <div>
+                    <label for="">Eps</label>
+                    <br>
+                    <select name="" id="">
+                        <optgroup label="Eps">
+                            <option value="">Nueva eps</option>
+                            <option value="">Sanitas</option>
+                        </optgroup>
+                    </select>
+                </div>
             </div>
-            <label for="">Departamentos</label>
-            <select name="departamentos" id="departamentos">
-                <optgroup label="Departamentos">
-                    <option value="1">Desarrollo</option>
-                    <option value="2">Analisís</option>
-                    <option value="3">Testing</option>
-                </optgroup>
-            </select>
-            <br>
-            <label for="">Cargo</label>
-            <select name="cargos" id="cargos">
-                <optgroup label="Cargos">
-                    <option value="1">Back-end</option>
-                    <option value="2">Front-end</option>
-                </optgroup>
-            </select>
-            <br>
-            <label for="">Jornada</label>
-            <select name="jornadas" id="jornadas">
-                <optgroup label="Jornadas">
-                    <option value="1">Diurna</option>
-                </optgroup>
-            </select>
-            <br>
-            <label for="">Contrato</label>
-            <select name="contratos" id="contratos">
-                <optgroup label="Contratos">
-                    <option value="1">Indefindo</option>
-                    <option value="2">Ops</option>
-                </optgroup>
-            </select>
-            <br>
-            <label for="">Salario básico</label>
-            <input type="text" name="salario_basic" min="100000" required>
-            <br>
-            <label for="">Dias laborados</label>
-            <input type="number" name="dias_lab" min="0" max="30" required>
-            <br>
-            <table id="horas_extras">
-                <tr>
-                    <th>Horas Extras diurnas ordinarias</th>
-                    <th>Horas Extras nocturnas ordinarias</th>
-                    <th>Horas Extras diurnas festivas</th>
-                    <th>Horas Extras nocturnas festivas</th>
-                </tr>
-                <tr>
-                    <td><input type="number" name="hora_ex_diur_or" min="0"></td>
-                    <td><input type="number" name="hora_ex_noc_or" min="0"></td>
-                    <td><input type="number" name="hora_ex_diur_fes" min="0"></td>
-                    <td><input type="number" name="hora_ex_noc_fes" min="0"></td>
-                </tr>
-            </table>
-            <button>Enviar</button>
+            <div>
+                <h4 class="sub-form">Contrato</h4>
+                <hr>
+                <div class="part_1">
+                    <div>
+                        <label for="">Departamentos</label>
+                        <br>
+                        <select name="departamentos" id="departamentos">
+                            <optgroup label="Departamentos">
+                                <option value="1">Desarrollo</option>
+                                <option value="2">Analisís</option>
+                                <option value="3">Testing</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="">Cargo</label>
+                        <br>
+                        <select name="cargos" id="cargos">
+                            <optgroup label="Cargos">
+                                <option value="1">Back-end</option>
+                                <option value="2">Front-end</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="">Jornada</label>
+                        <br>
+                        <select name="jornadas" id="jornadas">
+                            <optgroup label="Jornadas">
+                                <option value="1">Diurna</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="">Contrato</label>
+                        <br>
+                        <select name="contratos" id="contratos">
+                            <optgroup label="Contratos">
+                                <option value="1">Indefindo</option>
+                                <option value="2">Ops</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="">Salario básico</label>
+                        <br>
+                        <input type="text" name="salario_basic" min="100000" required>
+                    </div>
+                    <div>
+                        <label for="">Horas extras diurnas</label>
+                        <br>
+                        <input type="number" name="hora_ex_diur_or" min="0">
+                    </div>
+                    <div>
+                        <label for="">Horas Extras nocturnas ordinarias</label>
+                        <br>
+                        <input type="number" name="hora_ex_noc_or" min="0">
+                    </div>
+                    <div>
+                        <label for="">Horas Extras diurnas festivas</label>
+                        <br>
+                        <input type="text">
+                    </div>
+                </div>  
+            </div>
+            <div class="container-btn">
+                <a class="btn-save">Guardar</a>
+                <a class="btn-cancel">Cancelar</a>
+            </div>
         </form>
         <br>
         <br>
-        <button onclick="verEmpleados();">Ver empleados</button>
+        <button class="btn-save"onclick="verEmpleados();">Ver empleados</button>
         
     </div>
     <script>
