@@ -92,8 +92,9 @@ form{
 }
 
 
-.nav-vertical{
-    background-color: var(--barras);
+.nav-bar{
+    background-color: var(--letras);
+    border: 1px solid black;
 }
 
 
