@@ -17,6 +17,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de empleados</title>
+    <link rel="stylesheet" href="estilos/estilos.css">
     <style>
         table,th,td{
             border:1px solid black;
@@ -25,6 +26,15 @@
 </head>
 <body>
 <h1>Listado de empleados</h1>
+<div class="nav-vertical">
+    <ul>
+        <li>Imagen</li>
+        <li>Inicio</li>
+        <li>Empleados</li>
+        <li>Ajustes</li>
+        <li>Salir</li>
+    </ul>
+</div>
     <div>
         <form action="consultaempleados.php" method="GET">
             <label for="busquedaEmp">Buscar empleado por la cedula</label>

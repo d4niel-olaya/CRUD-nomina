@@ -1,3 +1,12 @@
+:root{
+    --principal:#c7231b;
+    --botones:#d9534f;
+    --letras:#373a3c;
+    --barras:#ebebeb;
+    --letras:#ededed;
+}
+
+
 *{
     margin:0px;
     padding: 0px;
@@ -80,6 +89,11 @@ form{
     padding: 3px 15px 3px 15px;
     color: white;
     background-color: #373a3c;
+}
+
+
+.nav-vertical{
+    background-color: var(--barras);
 }
 
 
