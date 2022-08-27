@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule ^empleados		controllers/empleados.php
