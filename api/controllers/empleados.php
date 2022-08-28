@@ -4,15 +4,14 @@
 require_once '../database/conexion.php';
 
 interface IConsulta{
-    public function get($conexion);
+    public function get($conexion,$consulta);
 }
 
 abstract class Consulta implements IConsulta{
-    protected $consulta  = 'SELECT * from productos';
-    public function get($conexion){
-        $resultado = mysqli_query($conexion, $this->consulta);
+    public function get($conexion, $consulta){
+        $resultado = mysqli_query($conexion, $consulta);
         $items = [];
-        if($resultado = mysqli_query($conexion, $this->consulta)){
+        if($resultado = mysqli_query($conexion, $consulta)){
             while($row = mysqli_fetch_assoc($resultado)){
                 $id = $row['id'];
                 $nombre = $row['nombre'];
@@ -23,16 +22,26 @@ abstract class Consulta implements IConsulta{
             return json_encode($items,true);
         }
     }
+    public function post(){
+        echo 'Esto es una clase para crear elementos';
+    }
 }
 
-class Empleados extends Consulta{
-
+class Consultas extends Consulta{
+    private $conexion;
+    private $consulta = 'SELECT * from productos';
+    public function __construct()
+    {   
+        $this->conexion = Database::Conexion();
+    }
+    public function getElements(){
+        return $this->get($this->conexion, $this->consulta);
+    }
 }
 
-$empleado = new Empleados();
+$empleado = new Consultas();
 header('Content-Type:application/json');
-print_r($empleado->get(Database::Conexion()));
-
+print_r($empleado->getElements());
 
 
 // Database::Conexion()->query('SELECT * from productos');

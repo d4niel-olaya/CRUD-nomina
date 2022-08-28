@@ -2,10 +2,7 @@ const url = 'http://localhost:80/proyecto_nomina/api/empleados';
 
 
 async function api(){
-    const response = await fetch(url, {mode: 'cors',
-    headers: {
-        'Access-Control-Allow-Origin':'*',
-    }}).then(res => res.json());
+    const response = await fetch(url).then(res => res.json());
     return response;
 }
 const app = document.getElementById('app');
